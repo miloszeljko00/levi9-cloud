@@ -1,0 +1,185 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/actions": {
+      "post": {
+        "operationId": "CloudPricingController_store",
+        "summary": "",
+        "description": "Store lists of actions",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/ActionDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "List of actions successfully stored"
+          }
+        },
+        "tags": [
+          "Cloud-Pricing"
+        ]
+      }
+    },
+    "/user/{userId}/costs": {
+      "get": {
+        "operationId": "CloudPricingController_getCosts",
+        "summary": "",
+        "description": "Calculate and retrieve all costs",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "serviceTypes",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "untilDate",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CostsDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "Cloud-Pricing"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "Levi9 cloud-pricing service",
+    "description": "cloud-pricing service endpoints",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "schemas": {
+      "ActionDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "number"
+          },
+          "timestamp": {
+            "type": "number"
+          },
+          "actionType": {
+            "type": "string",
+            "enum": [
+              "EXEC",
+              "INSERT",
+              "SELECT",
+              "SOFT_DELETE",
+              "PUT",
+              "GET",
+              "START",
+              "STOP"
+            ]
+          },
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "FUNC",
+              "DB",
+              "OBJECT_STORAGE",
+              "VM",
+              "NETWORK"
+            ]
+          },
+          "payloadSizeMb": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "userId",
+          "timestamp",
+          "actionType",
+          "serviceType",
+          "payloadSizeMb"
+        ]
+      },
+      "CostsPerServiceDto": {
+        "type": "object",
+        "properties": {
+          "serviceType": {
+            "type": "string",
+            "enum": [
+              "FUNC",
+              "DB",
+              "OBJECT_STORAGE",
+              "VM",
+              "NETWORK"
+            ]
+          },
+          "cost": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "serviceType",
+          "cost"
+        ]
+      },
+      "CostsDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "number"
+          },
+          "totalCosts": {
+            "type": "number"
+          },
+          "costsPerService": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CostsPerServiceDto"
+            }
+          }
+        },
+        "required": [
+          "userId",
+          "totalCosts",
+          "costsPerService"
+        ]
+      }
+    }
+  }
+}
